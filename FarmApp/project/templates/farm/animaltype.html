@@ -1,0 +1,9 @@
+<!-- Display the list of animal types -->
+<ul>
+    {% for animal_type in animal_types %}
+        <li>{{ animal_type.name }}
+            <a href="{% url 'delete_animal_type' animal_type.id %}">Delete</a>
+        </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'add_animal_type' %}">Add Animal Type</a>

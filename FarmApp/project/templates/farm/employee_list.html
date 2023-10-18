@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee List</title>
+</head>
+<body>
+    <h1>Employee List</h1>
+    <ul>
+        {% for employee in employees %}
+            <li>
+                <span>{{ employee.first_name }} {{ employee.last_name }}</span>
+                <a href="{% url 'employee_detail' employee.pk %}">View</a>
+                <a href="{% url 'employee_update' employee.pk %}">Update</a>
+                <a href="{% url 'employee_delete' employee.pk %}">Delete</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'employee_create' %}">Create New Employee</a>
+</body>
+</html>

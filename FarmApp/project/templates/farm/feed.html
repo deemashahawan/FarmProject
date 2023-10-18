@@ -1,0 +1,9 @@
+<!-- Display the list of feeds -->
+<ul>
+    {% for feed in feeds %}
+        <li>{{ feed.name }} ({{ feed.amount }} units)
+            <a href="{% url 'delete_feed' feed.id %}">Delete</a>
+        </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'add_feed' %}">Add Feed</a>
