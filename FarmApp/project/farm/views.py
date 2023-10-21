@@ -1,26 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Animal,AnimalType,Feed,Employee
 from .forms import AnimalForm,AnimalTypeForm,FeedForm,EmployeeForm 
+from django.urls import reverse
 
 
 
 # Create your views here.
 def index(req):
-    x={'name':'deema',
-       'age':21}
-    return render(req,'farm/index.html',x)
+    links = {
+        "animal_list": reverse('animal_list'),
+        "animal_type_list": reverse('animal_type_list'),
+        "feed_list": reverse('feed_list'),
+        "employee_list": reverse('employee_list'),
+    }
+    return render(req,'farm/index.html', {'links': links})
 
-#def employee(req):
-    #return render(req,'farm/employee.html')
-
-#def animal(req):
-    #return render(req,'farm/animal.html')
-
-#def animaltype(req):
-    #return render(req,'farm/animaltype.html')
-
-#def feed(req):
-    #return render(req,'farm/feed.html')
 
 def animal_list(request):
     animals = Animal.objects.all()
