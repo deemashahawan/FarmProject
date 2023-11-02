@@ -1,11 +1,22 @@
 from django.urls import path
 from . import views
+from rest_framework.routers import DefaultRouter
+from .api import  AnimalViewSet, AnimalTypeViewSet, FeedViewSet,EmployeeViewSet 
+from django.urls import include
+
+
+router = DefaultRouter()
+router.register(r'animals', AnimalViewSet)
+router.register(r'animaltypes', AnimalTypeViewSet)
+router.register(r'feeds', FeedViewSet)
+router.register(r'employees', EmployeeViewSet)
 
 urlpatterns=[
     path('',views.index,name='index'),
-    #path('employee',views.employee,name='employee'),
-    #path('feed',views.feed,name='feed'),
 
+     #api urls
+    path('api/', include(router.urls)), 
+    
     path('animals/', views.animal_list, name='animal_list'),
     path('animal/add/', views.add_animal, name='add_animal'),
     path('animal/<int:animal_id>/update/', views.update_animal, name='update_animal'),

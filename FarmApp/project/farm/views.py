@@ -6,6 +6,41 @@ from django.urls import reverse
 
 
 # Create your views here.
+
+def list_model(request, model, template_name, context_name):
+    items = model.objects.all()
+    context = {context_name: items}
+    return render(request, template_name, context)
+
+def add_model(request, form_class, template_name, list_url):
+    if request.method == 'POST':
+        form = form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(list_url)
+    else:
+        form = form_class()
+    context = {'form': form}
+    return render(request, template_name, context)
+
+def update_model(request, model, form_class, item_id, template_name, list_url):
+    item = get_object_or_404(model, id=item_id)
+    if request.method == 'POST':
+        form = form_class(request.POST, instance=item)
+        if form.is_valid():
+            form.save()
+            return redirect(list_url)
+    else:
+        form = form_class(instance=item)
+    context = {'form': form, 'item': item}
+    return render(request, template_name, context)
+
+def delete_model(request, model, item_id, list_url):
+    item = get_object_or_404(model, id=item_id)
+    item.delete()
+    return redirect(list_url)
+###########################################
+
 def index(req):
     links = {
         "animal_list": reverse('animal_list'),
@@ -17,114 +52,49 @@ def index(req):
 
 
 def animal_list(request):
-    animals = Animal.objects.all()
-    context = {'animals': animals}
-    return render(request, 'farm/animal.html', context)
+    return list_model(request, Animal, 'farm/animal.html', 'animals')
 
 def add_animal(request):
-    if request.method == 'POST':
-        form = AnimalForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('animal_list')
-    else:
-        form = AnimalForm()
-    context = {'form': form}
-    return render(request, 'farm/animal_form.html', context)
+    return add_model(request, AnimalForm, 'farm/animal_form.html', 'animal_list')
 
 def update_animal(request, animal_id):
-    animal = Animal.objects.get(id=animal_id)
-    if request.method == 'POST':
-        form = AnimalForm(request.POST, instance=animal)
-        if form.is_valid():
-            form.save()
-            return redirect('animal_list')
-    else:
-        form = AnimalForm(instance=animal)
-    context = {'form': form, 'animal': animal}
-    return render(request, 'farm/animal_form.html', context)
+    return update_model(request, Animal, AnimalForm, animal_id, 'farm/animal_form.html', 'animal_list')
 
 def delete_animal(request, animal_id):
-    animal = Animal.objects.get(id=animal_id)
-    animal.delete()
-    return redirect('animal_list')
+        return delete_model(request, Animal, animal_id, 'animal_list')
 ##################
 def animal_type_list(request):
-    animal_types = AnimalType.objects.all()
-    context = {'animal_types': animal_types}
-    return render(request, 'farm/animaltype.html', context)
+    return list_model(request, AnimalType, 'farm/animaltype.html', 'animal_types')
 
 def add_animal_type(request):
-    if request.method == 'POST':
-        form = AnimalTypeForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('animal_type_list')
-    else:
-        form = AnimalTypeForm()
-    context = {'form': form}
-    return render(request, 'farm/animaltype_form.html', context)
+    return add_model(request, AnimalTypeForm, 'farm/animaltype_form.html', 'animal_type_list')
 
 def delete_animal_type(request, animal_type_id):
-    animal_type = AnimalType.objects.get(id=animal_type_id)
-    animal_type.delete()
-    return redirect('animal_type_list')
+    return delete_model(request, AnimalType, animal_type_id, 'animal_type_list')
 
 ###########
 def feed_list(request):
-    feeds = Feed.objects.all()
-    context = {'feeds': feeds}
-    return render(request, 'farm/feed.html', context)
+    return list_model(request, Feed, 'farm/feed.html', 'feeds')
 
 def add_feed(request):
-    if request.method == 'POST':
-        form = FeedForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('feed_list')
-    else:
-        form = FeedForm()
-    context = {'form': form}
-    return render(request, 'farm/feed_form.html', context)
+    return add_model(request, FeedForm, 'farm/feed_form.html', 'feed_list')
 
 def delete_feed(request, feed_id):
-    feed = Feed.objects.get(id=feed_id)
-    feed.delete()
-    return redirect('feed_list')
+    return delete_model(request, Feed, feed_id, 'feed_list')
 
 ##################
 def employee_list(request):
-    employees = Employee.objects.all()
-    return render(request, 'farm/employee_list.html', {'employees': employees})
+    return list_model(request, Employee, 'farm/employee_list.html', 'employees')
 
 def employee_detail(request, pk):
     employee = get_object_or_404(Employee, pk=pk)
     return render(request, 'farm/employee_detail.html', {'employee': employee})
 
 def employee_create(request):
-    if request.method == 'POST':
-        form = EmployeeForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('employee_list')
-    else:
-        form = EmployeeForm()
-    return render(request, 'farm/employee_form.html', {'form': form})
+    return add_model(request, EmployeeForm, 'farm/employee_form.html', 'employee_list')
 
 def employee_update(request, pk):
-    employee = get_object_or_404(Employee, pk=pk)
-    if request.method == 'POST':
-        form = EmployeeForm(request.POST, instance=employee)
-        if form.is_valid():
-            form.save()
-            return redirect('employee_list')
-    else:
-        form = EmployeeForm(instance=employee)
-    return render(request, 'farm/employee_form.html', {'form': form})
+   return update_model(request, Employee, EmployeeForm, pk, 'farm/employee_form.html', 'employee_list')
 
 def employee_delete(request, pk):
-    employee = get_object_or_404(Employee, pk=pk)
-    if request.method == 'POST':
-        employee.delete()
-        return redirect('employee_list')
-    return render(request, 'farm/employee_confirm_delete.html', {'employee': employee})
+     return delete_model(request, Employee, pk, 'employee_list')
