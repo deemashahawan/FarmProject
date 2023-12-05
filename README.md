@@ -24,7 +24,7 @@ Decorator: @csrf_exempt This decorator is used to exempt the view from the CSRF 
 
 def delete_animal(request, animal_id):this view allows you to delete an animal by sending a POST request to the endpoint with the corresponding animal ID. The response will contain a JSON message indicating the success of the deletion.
 
-
+and the same things for all models.
 
 
 
