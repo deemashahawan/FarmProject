@@ -12,3 +12,20 @@ After that, I noticed that there is a great similarity between the add function 
 templates:This folder belongs to the frontand I built the screens with some html,css ,So I can try the application easily.
 
 (api.py):In the end, I converted the code written in the views to the same existing logic to rest-API ,Sometimes the frontend is not ready or we do not even know what it is exactly, so we resort to building the application in this way to bring back Jason file.Or when we build Rest-API, then we can build MobileApp, Web, and Desktop, all of which use the same api .
+
+def safe_json_response(data, status=200):The purpose of this function is to create a JSON response using Django's JsonResponse but with additional handling for cases where the data might not be directly serializable to JSON.
+
+def animal_list(request):The overall purpose of the animal_list function is to provide a JSON response containing information about all animals in the database. It takes advantage of the safe_json_response utility to handle serialization issues and respond gracefully even if the data is complex or includes non-serializable objects.
+
+def add_animal(request):The primary purpose of this view is to handle incoming 'POST' requests containing JSON data to add a new animal to the database.
+It is designed to handle potential errors, such as invalid data or integrity violations, and respond with appropriate error messages and status codes.
+
+Decorator: @csrf_exempt This decorator is used to exempt the view from the CSRF (Cross-Site Request Forgery) protection. CSRF protection is a security feature in Django that prevents unauthorized forms from being submitted on behalf of a user.
+
+def delete_animal(request, animal_id):this view allows you to delete an animal by sending a POST request to the endpoint with the corresponding animal ID. The response will contain a JSON message indicating the success of the deletion.
+
+
+
+
+
+
