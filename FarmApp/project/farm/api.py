@@ -6,7 +6,7 @@ import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
-
+from django.db.models import Prefetch
 
 def safe_json_response(data, status=200):
     """
@@ -20,7 +20,19 @@ def safe_json_response(data, status=200):
 
 
 def animal_list(request):
-    animals = Animal.objects.values()
+    animals = Animal.objects.prefetch_related(Prefetch('feeds', queryset=Feed.objects.all()))
+
+    animal_data = [
+        {
+            'id': animal.id,
+            'name': animal.name,
+            'type_id': animal.type_id,
+            'gender': animal.gender,
+            'weight': animal.weight,
+            'feeds': list(animal.feeds.values('id', 'name'))
+        }
+        for animal in animals
+    ]
     return safe_json_response({'animals': list(animals)})
 
 @csrf_exempt
