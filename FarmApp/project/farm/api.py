@@ -20,8 +20,8 @@ def safe_json_response(data, status=SUCCESS_STATUS):
     except TypeError:
         return JsonResponse(json.loads(json.dumps(data, cls=DjangoJSONEncoder)), status=status)
 
-def handle_error_response():
-    return safe_json_response({'error': 'Invalid data provided'}, status=ERROR_STATUS)
+def handle_error_response(error_message, status=ERROR_STATUS):
+    return safe_json_response({'error':error_message}, status=status)
 
 def handle_not_allowed_response():
     return safe_json_response({'error': 'Method not allowed'}, status=NOT_ALLOWED_STATUS)
@@ -70,7 +70,7 @@ def add_animal(request):
                 animal.feeds.set(data.get('feeds', []))
                 return safe_json_response({'animal_id': animal.id})
             except (IntegrityError, ValidationError):
-                return handle_error_response()
+                return handle_error_response('Invalid data provided')
     return handle_not_allowed_response()
 
 @csrf_exempt
@@ -90,7 +90,7 @@ def update_animal(request, animal_id):
                 animal.save()
                 return safe_json_response({'message': 'Animal updated successfully'})
             except (IntegrityError, ValidationError):
-                return handle_error_response()
+                return handle_error_response('Invalid data provided')
     return handle_not_allowed_response()
 
 @csrf_exempt
@@ -114,7 +114,7 @@ def add_animal_type(request):
                 animal_type = AnimalType.objects.create(name=data.get('name'))
                 return safe_json_response({'animal_type_id': animal_type.id})
             except (IntegrityError, ValidationError):
-                return handle_error_response()
+                return handle_error_response('Invalid data provided')
     return handle_not_allowed_response()
 
 @csrf_exempt
@@ -138,7 +138,7 @@ def add_feed(request):
                 feed = Feed.objects.create(name=data.get('name'), amount=data.get('amount'))
                 return safe_json_response({'feed_id': feed.id})
             except (IntegrityError, ValidationError):
-                return handle_error_response()
+                return handle_error_response('Invalid data provided')
     return handle_not_allowed_response()
 
 @csrf_exempt
@@ -166,7 +166,7 @@ def employee_create(request):
                 )
                 return safe_json_response({'employee_id': employee.id})
             except (IntegrityError, ValidationError):
-                return handle_error_response()
+                return handle_error_response('Invalid data provided')
     return handle_not_allowed_response()
 
 @csrf_exempt
@@ -184,7 +184,7 @@ def employee_update(request, pk):
                 employee.save()
                 return safe_json_response({'message': 'Employee updated successfully'})
             except (IntegrityError, ValidationError):
-                return handle_error_response()
+                return handle_error_response('Invalid data provided')
     return handle_not_allowed_response()
 
 @csrf_exempt
